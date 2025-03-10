@@ -10,6 +10,9 @@ export default function Projects() {
         desc: string;
     }
 
+
+    
+
     const [projects, setProjects] = useState<Project[]>([]);
     const [error, setError] = useState<string | null>(null);
 
@@ -34,6 +37,14 @@ export default function Projects() {
         fetchProjects();
     }, [fetchProjects]);
 
+
+    
+
+    const handleclick = async () => {
+        const res =  await fetch(`/api/${body}`);
+        return Response.json(res);
+    }
+
     return (
         <main>
             <div className="flex justify-center items-center text-white py-9 text-6xl mt-9 w-full">
@@ -42,21 +53,14 @@ export default function Projects() {
                         <h1 className="pt-5 text-4xl">Projects</h1>
 
                         <Link href="/projects/create" className="place-self-start mt-6">
-                            <button
-                                type="button"
-                                className="rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-green-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
-                            >
-                                + Add
-                            </button>
-                        </Link>
-                        <Link href="/create" className="place-self-start mt-6">
-                            <button
-                                type="button"
-                                className="rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-red-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
-                            >
-                                - Remove
-                            </button>
-                        </Link>
+                                                <button
+                                                    type="button"
+                                                    className="rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-green-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
+                                                >
+                                                    + Add
+                                                </button>
+                                            </Link>
+                  
                     </div>
                     <div className="text-2xl mt-9">
                         {error ? (
@@ -68,6 +72,7 @@ export default function Projects() {
                                         <th className="py-2 px-4 border-b border-gray-700">No.</th>
                                         <th className="py-2 px-4 border-b border-gray-700">Project Name</th>
                                         <th className="py-2 px-4 border-b border-gray-700">Description</th>
+                                        <th className="py-2 px-4 border-b border-gray-700">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,6 +81,26 @@ export default function Projects() {
                                             <td className="py-2 px-4 border-b border-gray-700">{index + 1}</td>
                                             <td className="py-2 px-4 border-b border-gray-700">{project.projectName}</td>
                                             <td className="py-2 px-4 border-b border-gray-700">{project.desc}</td>
+                                            <td>
+
+                                            <Link href="/projects/create" className="place-self-start mt-6">
+                                                <button
+                                                    type="button"
+                                                    className="rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-yellow-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
+                                                >
+                                                    + Edit
+                                                </button>
+                                            </Link>
+
+                                           
+                                                    <button onClick={handleclick}
+                                                        type="button"
+                                                        className="rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-red-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
+                                                    >
+                                                        - Remove
+                                                    </button>
+                                             
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
