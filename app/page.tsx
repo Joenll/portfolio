@@ -11,10 +11,14 @@ export default function Page(){
             </div>
          
           <div className="grid grid-cols-2 gap-9 mt-9 text-2xl text-gray-300 w-full max-w-4xl">
-            <p className="text-left mt-17 ">
-              An intern from <span className="text-blue-500 text-3xl ml-2">arete</span>
-              <span className="text-yellow-500 text-2xl mr-2">X</span> aspiring to be a professional web developer.
+           
+            <p className="text-left mt-17 gap-2">
+              An intern from   <img src="/123.png" width={130} className="inline-block mt-4 px-3" />
+              
+             
+              aspiring to be a professional web developer.
             </p>
+            
             <img src="/images.jpg" width={250} height={250} className="justify-self-end rounded-lg border-5 border-gray-400 "/>
           </div>
 

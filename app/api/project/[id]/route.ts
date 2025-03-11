@@ -1,27 +1,33 @@
 import connectDB from "@/app/lib/mongodb";
 import Project from "@/models/projects";
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose"; //  Import for ObjectId validation
 
+export async function DELETE(req: Request, { params }: { params: { id?: string } }) {
+  await connectDB(); //  Ensure database is connected
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  await connectDB(); // Connect to DB
+  console.log(" Received DELETE request for ID:", params.id); //  Debugging step
 
   try {
-    // 1️ Extract the ID from params
-    const { id } = params;
+    //  Check if ID exists and is a valid MongoDB ObjectId
+    if (!params.id || !mongoose.Types.ObjectId.isValid(params.id)) {
+      console.error(" Invalid or missing ID:", params.id);
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
 
-    // 2️ Delete the project by ID
-    const deletedProject = await Project.findByIdAndDelete(id);
+    //  Delete project by ID
+    const deletedProject = await Project.findByIdAndDelete(params.id);
 
-    // 3 Check if project was found
     if (!deletedProject) {
+      console.error(" Project not found for ID:", params.id);
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
 
-    // 4️ Return success response
+    console.log(" Project deleted:", deletedProject);
     return NextResponse.json({ message: "Project deleted successfully" });
+
   } catch (error) {
-    console.error("Error deleting project:", error);
+    console.error(" Error deleting project:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

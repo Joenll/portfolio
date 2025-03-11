@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import Project from "@/models/projects";
 
 export default function Projects() {
     interface Project {
@@ -38,12 +39,43 @@ export default function Projects() {
     }, [fetchProjects]);
 
 
-    
 
-    const handleclick = async () => {
-        const res =  await fetch(`/api/${body}`);
-        return Response.json(res);
-    }
+
+
+    const handleclick = async (id: string | undefined) => {
+        if (!id) {
+          console.error(" handleClick received undefined ID!");
+          return;
+        }
+      
+        console.log(` Sending DELETE request to: /api/project/${id}`);
+      
+        try {
+          const res = await fetch(`/api/project/${id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+          });
+      
+          const result = await res.json();
+          console.log("Server Response:", result); // Debugging step
+      
+          if (!res.ok) {
+            throw new Error(`Failed to delete project: ${res.status} ${res.statusText}`);
+          }
+      
+          console.log("Project deleted successfully");
+          setProjects((prevProjects) => prevProjects.filter((project) => project.id !== id));
+        } catch (error) {
+          console.error(" Can't Delete Project:", error);
+        }
+      };
+      useEffect(() =>{
+        console.log("Updated:", projects);
+    }, [projects]);
+
+
+
+
 
     return (
         <main>
@@ -55,7 +87,7 @@ export default function Projects() {
                         <Link href="/projects/create" className="place-self-start mt-6">
                                                 <button
                                                     type="button"
-                                                    className="rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-green-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
+                                                    className="text-white rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-green-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
                                                 >
                                                     + Add
                                                 </button>
@@ -66,41 +98,50 @@ export default function Projects() {
                         {error ? (
                             <p className="text-red-500">{error}</p>
                         ) : (
-                            <table className="min-w-full bg-gray-800">
+                            <table className="min-w-full bg-gray-800 border-separate border-spacing-2 border border-gray-400 table-auto border-spacing-2 md:border-spacing-4 border-collapse border-separate border border-white ">
                                 <thead>
                                     <tr>
-                                        <th className="py-2 px-4 border-b border-gray-700">No.</th>
-                                        <th className="py-2 px-4 border-b border-gray-700">Project Name</th>
-                                        <th className="py-2 px-4 border-b border-gray-700">Description</th>
-                                        <th className="py-2 px-4 border-b border-gray-700">Actions</th>
+                                        <th className="py-2 px-4 border-b border-gray-700 border border-white">No.</th>
+                                        <th className="py-2 px-4 border-b border-gray-700 border border-white">Project Name</th>
+                                        <th className="py-2 px-4 border-b border-gray-700 border border-white">Description</th>
+                                        <th className="py-2 px-7 border-b border-gray-700 border border-white">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {projects.map((project, index) => (
-                                        <tr key={project.id} className="hover:bg-gray-700">
+                                        
+                                        <tr key={project.id} >
                                             <td className="py-2 px-4 border-b border-gray-700">{index + 1}</td>
                                             <td className="py-2 px-4 border-b border-gray-700">{project.projectName}</td>
                                             <td className="py-2 px-4 border-b border-gray-700">{project.desc}</td>
-                                            <td>
+
+                                         
+                                            <td className="flex justify-center items-center gap-2">
 
                                             <Link href="/projects/create" className="place-self-start mt-6">
                                                 <button
                                                     type="button"
-                                                    className="rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-yellow-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
+                                                    className="text-white rounded-md border border-black bg-gray-500 mb-6 py-1.5 px-5 text-black transition-all hover:bg-yellow-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
                                                 >
                                                     + Edit
                                                 </button>
                                             </Link>
 
                                            
-                                                    <button onClick={handleclick}
-                                                        type="button"
-                                                        className="rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-red-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
-                                                    >
-                                                        - Remove
-                                                    </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    console.log(" Rendered Project:", project);
+                                                    console.log(` Button clicked for ID: ${project.id}`);
+                                                    handleclick(project.id);
+                                                }}
+                                                className="text-white rounded-md border border-black bg-gray-500 py-1.5 px-5 text-black transition-all hover:bg-red-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"
+                                                >
+                                                - Remove
+                                                </button>
                                              
                                             </td>
+                                            
                                         </tr>
                                     ))}
                                 </tbody>
