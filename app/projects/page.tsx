@@ -118,7 +118,7 @@ export default function Projects() {
                                          
                                             <td className="flex justify-center items-center gap-2">
 
-                                            <Link href="/projects/create" className="place-self-start mt-6">
+                                            <Link href={`/projects/update?id=${project.id}`} className="place-self-start mt-6">
                                                 <button
                                                     type="button"
                                                     className="text-white rounded-md border border-black bg-gray-500 mb-6 py-1.5 px-5 text-black transition-all hover:bg-yellow-600 hover:text-white text-center text-sm font-inter flex items-center justify-center"

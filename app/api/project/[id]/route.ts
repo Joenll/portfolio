@@ -58,3 +58,26 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+
+export async function GET(req: Request, { params }: { params: { id?: string } }) {
+  await connectDB();
+
+  console.log(" Received GET request for ID:", params.id); // Debugging
+
+  if (!params.id) {
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
+  }
+
+  try {
+      const project = await Project.findById(params.id).lean();
+      if (!project) {
+          return NextResponse.json({ error: "Project not found" }, { status: 404 });
+      }
+
+      return NextResponse.json( project);
+  } catch (error) {
+      console.error(" Error fetching project:", error);
+      return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
